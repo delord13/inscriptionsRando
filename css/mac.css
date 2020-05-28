@@ -1,0 +1,436 @@
+/*			#top {position:absolute;top:0px;left:0px;width:100%;}
+			#content {position:absolute;top:0px;bottom:0px;left:0px;width:100%;overflow:auto;}
+			#foot {position:absolute;left:0px;bottom:0px;width:100%;} 
+*/
+
+	body {
+		font-family: sans-serif; 
+		font-size: small; 
+		padding: 0px;
+		margin: 0px;
+	}
+
+	div {
+		margin: 0px;
+	}
+	
+	p {
+		page-break-inside: avoid;
+	}
+	@media print {
+		#boutonImprimer { display: none;}
+		#boutonFermer { display: none;}
+	}
+	
+
+	#haut {
+		width: 100%;
+		margin : auto;
+/*		overflow-y: scroll;*/
+	}
+	
+	#content {
+		width: 100%; 
+		overflow-y: auto;
+		margin : auto;
+	}
+
+	#bas {
+		width: 100%; 
+		margin : auto;
+/*		overflow-y: scroll;*/
+	}
+
+	div#aide {
+		position : absolute;
+		top : 35%;
+		right : 20%;
+		z-index: 10001;
+		width: 60%;
+		height : 30%;
+		padding: 0px;
+		background-color:white;
+		border-width: 3px;
+		border-color: #336699;
+		border-style: solid;
+		display: inline;
+		overflow: hidden; /* auto*/
+		font-family:sans-serif; font-size:small;
+		text-align: justify;
+	}
+	div#contenuAide {
+/*					position : relative;
+		top : 0px;
+		left : 0px;
+		right : 50px;
+		bottom : 0px
+*/				
+		width : 97%;
+		height : 95%;
+		padding-top: 0px;
+		padding-left: 10px;
+		padding-right: 10px;
+		padding-bottom: 10px;
+
+		overflow : auto;
+		font-family:sans-serif; font-size:small;
+		text-align: justify;
+	}
+	div#aide > p {
+		margin-top: 2px; margin-bottom: 2px;
+	}
+	div#aide td {
+		font-family:sans-serif; font-size:small;
+	}
+	div#aide > ul {
+		margin-top: 2px; margin-bottom: 2px;
+	}
+	div#aide > ol {
+		margin-top: 2px; margin-bottom: 2px;
+	}
+	div#aide > h1{
+		color : #336699;
+		margin-top: 8px; margin-bottom: 5px;
+	}
+	div#aide > h2{
+		color : #336699;
+		margin-top: 8px; margin-bottom: 5px;
+	}
+	div#aide > h3{
+		color : #336699;
+		margin-top: 8px; margin-bottom: 5px;
+	}
+	div#aide > h4{
+		color : #336699;
+		margin-top: 8px; margin-bottom: 5px;
+	}
+	div#aide > hr{
+		color : #336699;
+		height : 3px;
+	}
+
+
+	table {
+		border: 0;
+		border-width: 0px;
+		border-collapse: separate;
+		width: 1024px;
+/*		max-width : 100%;*/
+		margin: auto;
+	}
+			
+	th {
+		padding: 3px;
+		background-color: #bec9db;
+	}
+	
+	td {
+		padding: 3px;
+	}
+	
+	td.tdGauche {
+		width: 50%; 
+		padding: 5px; 
+		text-align: right;
+	}
+	
+	td.tdDroite {
+		width: 50%; 
+		padding: 5px; 
+		text-align: left;
+	}
+	
+	
+	td.tdGaucheCourriel {
+		width: 15%; 
+		padding: 5px; 
+		text-align: right;
+	}
+	
+	td.tdDroiteCourriel {
+		width: 85%; 
+		padding: 5px; 
+		text-align: left;
+	}
+	
+	hr {
+		/* width: 1024px; */
+		 margin-left: auto; 
+		 margin-right: auto;
+	}
+	
+	h3 {
+		margin: 0px;
+	}
+
+	p {
+		margin: 0px;
+	}
+
+
+	tr:nth-of-type(even) {
+		background-color: #e5e5e5;
+	}
+
+	tr:nth-of-type(odd) {
+		background-color: #d5d5d5;
+	}
+
+	.tdBandeau {
+		background-color: #336699;
+	}
+	
+	.tdTitre {
+		background-color: #bec9db;
+		height: 19px;
+		font-weight: bold;
+	}
+	
+	.tdTitreCentre {
+		background-color: #bec9db;
+		height: 19px;
+		font-weight: bold;
+		text-align: center;
+	}
+	#message { 
+		color: red;
+	}
+	
+	.rouge {
+		color: red;
+	}
+	
+
+			
+			.boutonFiche {
+				height: 30px;
+			}
+			
+			.boutonSortie{
+				
+			}
+			
+			.boutonAnnuler {
+				font-size:small; 
+				font-weight:bold;
+			}
+			
+			td {
+				padding: 3px;
+			}
+			h3 {
+				margin: 0px;
+			}
+
+			p {
+				margin: 0px;
+			}
+
+			div {
+				margin: 0px;
+			}
+
+			.attendre {
+				position : absolute;
+				display: none;
+				top: 100px;
+				left: 100px;
+				z-index: 10001;
+				width: 100px;
+				height : 100px;
+				padding: 0px;
+				background-color:white;
+				border-width: 3px;
+				border-color: #336699;
+				border-style: solid;
+				overflow: hidden; /* auto*/
+				font-family:sans-serif; font-size:medium;
+				text-align: center;
+				margin-left: auto; 
+				margin-right: auto;
+			}
+
+			
+			.fiche {
+				position : absolute;
+				top : 10%;/*  20%; */
+				right : 10%;
+				z-index: 10001;
+				width: 75%; /*60%;*/
+				height : 75% ; /*600px */
+				padding: 0px;
+				background-color:white;
+				border-width: 3px; /* 3px*/
+				border-color: #336699;
+				border-style: solid;
+				display: inline;
+				overflow: hidden; /* autohidden*/
+				font-family:sans-serif; font-size:small;
+				text-align: justify;
+			}
+
+			.conteneur {
+/*				width : 100%;*/
+/*				height : 100%;*/
+				
+				
+				position: relative;
+				padding-top: 0px;
+				padding-left: 10px;
+				padding-right: 10px;
+				padding-bottom: 10px;
+				overflow : auto;
+				font-family:sans-serif; font-size:small;
+				text-align: justify;
+			}
+
+			p.fiche > p {
+				margin-top: 2px; margin-bottom: 2px;
+			}
+
+
+			h1.fiche{
+				color : #336699;
+				margin-top: 8px; margin-bottom: 5px;
+			}
+			h2.fiche{
+				color : #336699;
+				margin-top: 8px; margin-bottom: 5px;
+				
+			}
+			h3.fiche{
+				color : #336699;
+				margin-top: 8px; margin-bottom: 5px;
+			}
+			h4.fiche> h4{
+				color : #336699;
+				margin-top: 8px; margin-bottom: 5px;
+			}
+			hr.fiche > hr{
+				color : #336699;
+				height : 3px;
+			}
+
+			/*pour datePicker inputDate*/
+			.inputDate {
+				text-align: center;  width: 100px; background-color: #f3f3f3; border-radius: 4px; border: 1px solid #abadb3; height: 22px; width: 110px;
+			}
+			
+			/* pour liste de fichiers */
+			.divListeFichiers {
+				background-color: #f3f3f3;
+				border-radius: 4px; border: 1px solid #abadb3; padding: 5px; background: #f3f3f3 ; font-size: small;
+			}
+
+
+			
+
+
+
+			div.conteneurBoutons {
+				position : absolute;
+				top : 0px; /* 8 */
+				right : 50%;
+				z-index: 10000;
+				width: 36px; /* 36 */
+				height : 18px;
+				background-color:white;
+				border-width: 3px;
+				border-color: #336699;
+				border-style: solid;
+			}
+			div.boutons {
+				position: relative;
+				width: 34px;
+				height : 16px;
+				background-color:#fee990;
+				border-width: 1px;
+				border-color: white;
+				border-style: solid;
+			}
+			
+			select {
+				font-size:small;
+			}
+
+			.hauteur {
+				height: 25px;
+			}
+
+			/*pour datePicker inputDate*/
+			.inputDate {
+				text-align: center;  width: 100px; background-color: #f3f3f3; border-radius: 4px; border: 1px solid #abadb3; height: 22px; width: 110px;
+			}
+			
+
+/*
+			.trBandeau {
+				background-color: #336699;
+			}
+			
+			
+			.trTitre {
+				background-color: #bec9db;
+			}
+			.trPair{
+				background-color: #e5e5e5;
+			}
+			.trImpair{
+				background-color: #d5d5d5;
+			}
+*/			
+/*
+			div#voirImage {
+				position : absolute;
+				top : 20%;
+				right : 20%;
+				z-index: 10001;
+				width: 60%;
+				height : 60%;
+				padding: 0px;
+				background-color:white;
+				border-width: 3px;
+				border-color: #336699;
+				border-style: solid;
+				display: inline;
+				overflow: hidden; 
+				font-family:sans-serif; font-size:small;
+				text-align: justify;
+			}
+
+			div#contenuVoirImage {
+				width : 97%;
+				height : 95%;
+				padding-top: 0px;
+				padding-left: 10px;
+				padding-right: 10px;
+				padding-bottom: 10px;
+
+				overflow : auto;
+				font-family:sans-serif; font-size:small;
+				text-align: justify;
+			}
+*/
+			
+blink, .blink {
+  -webkit-animation: blink 1s step-end infinite;
+  -moz-animation: blink 1s step-end infinite;
+  -o-animation: blink 1s step-end infinite;
+  animation: blink 1s step-end infinite;
+}
+
+@-webkit-keyframes blink {
+  67% { opacity: 0 }
+}
+
+@-moz-keyframes blink {
+  67% { opacity: 0 }
+}
+
+@-o-keyframes blink {
+  67% { opacity: 0 }
+}
+
+@keyframes blink {
+  67% { opacity: 0 }
+}
