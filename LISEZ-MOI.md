@@ -72,7 +72,7 @@ Pour pouvoir installer l'application, il faut disposer :
 - un moyen de déposer des fichiers sur cet hébergement (accès FTP ou gestionnaire de fichier en ligne du compte d'hébergement)
 
 La procédure d'installation est la suivante :
-1. déposer dans un répertoire de l'hébergement les fichiers obtenus après avoir décompressé le fichier zip : inscriptionsRando.zip ;
+1. déposer dans un répertoire  de l'hébergement que vous avez créé pour l'application, tout le contenu du fichier zip "inscriptionsRando.zip" après l'avoir décompressé;
 2. recueillir les informations sur la base de données partagée ou créée pour l'application :
 - nom d'hôte (serveur MySQL)
 - nom de la base de données
@@ -83,6 +83,11 @@ La procédure d'installation est la suivante :
 5. à la fin de l'initialisation, un formulaire est proposé automatiquement : il permet de paramétrer l'application ;
 6. le paramétrage se termine avec la génération automatique du fichier param.inc.ph qui contient les paramètres définis ; on peut alors se connecter sur la page d'accueil de l'application et s'enregistrer comme super-administrteur.
 
+## Mise à jour de l'application
+Pour mettre à jour l'application avec une version plus récente, il suffit de :
+1. d'effacer tous les fichiers et tous les sous-repertoire qui se trouvent dans le répertoire de l'application SAUF LE FICHIER "param.inc.php" ;
+2. déposer dans le répertoire  de l'application, tout le contenu du fichier zip "inscriptionsRando.zip" de la nouvelle version après l'avoir décompressé.
+
 ## Licence ##
 Copyright Michel Delord 26/05/2020 logiciel libre sous licence CeCILL compatible avec la licence GNU GPL ; la licence est consultable à l'adresse : 
 https://cecill.info/licences/Licence_CeCILL_V2.1-fr.html 
@@ -90,6 +95,14 @@ https://cecill.info/licences/Licence_CeCILL_V2.1-fr.html
 En ce qui concerne la garantie, votre attention est attirée en particulier sur l'article 9.3 de la licence :
 > Le Licencié reconnaît que le Logiciel est fourni "en l'état" par le Concédant sans autre garantie, expresse ou tacite, que celle prévue à l'article 9.2 et notamment sans aucune garantie sur sa valeur commerciale, son caractère sécurisé, innovant ou pertinent.
 > En particulier, le Concédant ne garantit pas que le Logiciel est exempt d'erreur, qu'il fonctionnera sans interruption, qu'il sera compatible avec l'équipement du Licencié et sa  configuration logicielle ni qu'il remplira les besoins du Licencié.
+
+## RGPD ##
+L'application permet de respecter les règles du règlement général sur la protection des données :
+- la personne inscrite peut, à tout moment, consulter ses données personnelles enregistrées dans l'application ;
+- la pesonne inscrite peut modifier les données personnelles qu'il a enregistré ;
+- la personne inscrite peut exercer ses droits de rectification et d'opposition en renseignant un formulaire ;
+- le super administrateur peut supprimer le compte d'une personne inscrite et ainsi effacer toutes ses données personnelles ;
+- le super administrateur peut effacer toutes les données antérieures à une date qu'il choisi.
 
 ## Téléchargement ##
 L'application est disponible sur GitHub

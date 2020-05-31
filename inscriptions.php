@@ -89,16 +89,8 @@ error_reporting (E_ALL);
 		$dateSeance = date('Y-m-d', $dateHeureSeanceTS);
 		$dateSeanceTS = strtotime($dateSeance);
 		
-/*
-		$dateSeanceMoins7TS = $dateSeanceTS-(3600*24*7);
-		$dateSeanceMoins7 = date('Y-m-d', $dateSeanceMoins7TS);
-*/		
 		$dateSeanceMoins14TS = $dateSeanceTS-(3600*24*$GLOBALS['ouvertureNJoursAvant']);
 		$dateSeanceMoins14 = date('Y-m-d', $dateSeanceMoins14TS);
-/*		
-		$semaine1 = ($dateAujourdhui>=$dateSeanceMoins14)&&($dateAujourdhui<$dateSeanceMoins7);
-		$semaine2 = ($dateAujourdhui>=$dateSeanceMoins7)&&($dateHeureAujourdhui<=$dateVeilleSeance18h);
-*/		
 		$tropTot = $dateAujourdhui<$dateSeanceMoins14;
 		$tropTard = $dateHeureAujourdhui>$dateVeilleSeance18h;
 		
@@ -129,15 +121,6 @@ error_reporting (E_ALL);
 				$annulationPossible = TRUE;
 			}
 		} // fin existe inscription
-		/* pas de else déja initialisé :
-		$dejaInscrit = FALSE;
-		$placeAttribuee = FALSE;
-		$inscriptionAnnulee = FALSE;
-		$inscriptionAnnuleeTardivement = FALSE;
-		$annulationPossible = FALSE;
-		$supprimee = FALSE;
-		$numAttente = 0;
-		*/
 		
 		
 		// encore puni ?
@@ -193,7 +176,6 @@ error_reporting (E_ALL);
 		// sinon attribution place
 		else { // inscription place attribuée
 			$sql = "INSERT INTO {$GLOBALS['prefixe']}inscription (idInscription, seanceId, adherentLicence,  dateHeureInscription, dateHeureAttributionPlace, attenteInscription) VALUES (NULL, '".$_POST['idSeance']."', '".$_SESSION['idActeur']."',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, NULL)";
-//die($sql);
 			$res = mysqli_query ($GLOBALS['lkId'], $sql);
 			// on libère les verrous
 			$sql = "UNLOCK TABLES";
@@ -381,7 +363,7 @@ error_reporting (E_ALL);
 
 		<div id="haut" >
 <?php
-		$GLOBALS['titrePage'] = "{$GLOBALS['titrePage']} <br>pour $prenom $nom";
+		$GLOBALS['titrePage'] = "Inscription aux sorties <br>pour $prenom $nom";
 		include("divEnTete.inc.php");
 
 		// affichage réponse
@@ -812,8 +794,8 @@ error_reporting (E_ALL);
 <?php 
 	if ($_SESSION['statut']>1) {
 ?>
-								Gestion des sorties : 
-								<button type=button title="Gestion des sorties" onClick="var formulaire=document.getElementById('formInscription') ; formulaire.action='index.php'; formulaire.newAction.value='gestion'; formulaire.submit();">
+								Menu de gestion : 
+								<button type=button title="Menu de gestion pour animateur et administrateur" onClick="var formulaire=document.getElementById('formInscription') ; formulaire.action='gestion.php'; formulaire.newAction.value='gestion'; formulaire.submit();">
 								<img alt="modifier" src="images/gerer16.png">
 								</button>
 <?php 

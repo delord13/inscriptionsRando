@@ -20,6 +20,7 @@
 	@media print {
 		#boutonImprimer { display: none;}
 		#boutonFermer { display: none;}
+		#divNonImprimable { display: none;}
 	}
 	
 
@@ -40,75 +41,6 @@
 		margin : auto;
 /*		overflow-y: scroll;*/
 	}
-
-	div#aide {
-		position : absolute;
-		top : 35%;
-		right : 20%;
-		z-index: 10001;
-		width: 60%;
-		height : 30%;
-		padding: 0px;
-		background-color:white;
-		border-width: 3px;
-		border-color: #336699;
-		border-style: solid;
-		display: inline;
-		overflow: hidden; /* auto*/
-		font-family:sans-serif; font-size:small;
-		text-align: justify;
-	}
-	div#contenuAide {
-/*					position : relative;
-		top : 0px;
-		left : 0px;
-		right : 50px;
-		bottom : 0px
-*/				
-		width : 97%;
-		height : 95%;
-		padding-top: 0px;
-		padding-left: 10px;
-		padding-right: 10px;
-		padding-bottom: 10px;
-
-		overflow : auto;
-		font-family:sans-serif; font-size:small;
-		text-align: justify;
-	}
-	div#aide > p {
-		margin-top: 2px; margin-bottom: 2px;
-	}
-	div#aide td {
-		font-family:sans-serif; font-size:small;
-	}
-	div#aide > ul {
-		margin-top: 2px; margin-bottom: 2px;
-	}
-	div#aide > ol {
-		margin-top: 2px; margin-bottom: 2px;
-	}
-	div#aide > h1{
-		color : #336699;
-		margin-top: 8px; margin-bottom: 5px;
-	}
-	div#aide > h2{
-		color : #336699;
-		margin-top: 8px; margin-bottom: 5px;
-	}
-	div#aide > h3{
-		color : #336699;
-		margin-top: 8px; margin-bottom: 5px;
-	}
-	div#aide > h4{
-		color : #336699;
-		margin-top: 8px; margin-bottom: 5px;
-	}
-	div#aide > hr{
-		color : #336699;
-		height : 3px;
-	}
-
 
 	table {
 		border: 0;

@@ -5,7 +5,18 @@
 	session_start();
 
 	include('init.inc.php');
+
 	mettreAJourInscriptions();
+	
+	// mise à jour de la structure des tables de la version 1 (commentaires manquants)
+	$sql = "ALTER TABLE {$GLOBALS['prefixe']}inscription CHANGE dateHeureAttributionPlace dateHeureAttributionPlace DATETIME NULL DEFAULT NULL COMMENT 'date attribution de place', CHANGE attributionTardiveInscription attributionTardiveInscription VARCHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'atribution tardive', CHANGE annulationTardiveInscription annulationTardiveInscription VARCHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'annulation tardive', CHANGE dateLimiteAttenteInscription dateLimiteAttenteInscription DATE NULL DEFAULT NULL COMMENT 'date limite sanction pour absence'";
+	$res = mysqli_query ($GLOBALS['lkId'], $sql);
+	$sql = "ALTER TABLE {$GLOBALS['prefixe']}adherent CHANGE actif actif INT(11) NOT NULL DEFAULT '1' COMMENT 'actif·ive', CHANGE dateLimiteAttenteAdherent dateLimiteAttenteAdherent DATE NULL DEFAULT NULL COMMENT 'date limite sanction pour absence'";
+	$res = mysqli_query ($GLOBALS['lkId'], $sql);
+	$sql = "ALTER TABLE {$GLOBALS['prefixe']}seanceAnimateur CHANGE idSeanceAnimateur idSeanceAnimateur INT(11) NOT NULL AUTO_INCREMENT COMMENT 'id'";
+	$res = mysqli_query ($GLOBALS['lkId'], $sql);
+	$sql = "ALTER TABLE {$GLOBALS['prefixe']}inscription CHANGE dateHeureAttributionPlace dateHeureAttributionPlace TIMESTAMP NULL DEFAULT NULL COMMENT 'date attribution de place', CHANGE dateHeureAnnulationInscription dateHeureAnnulationInscription TIMESTAMP NULL DEFAULT NULL COMMENT 'date heure annulation inscription';";
+	$res = mysqli_query ($GLOBALS['lkId'], $sql);
 	
 	// gérer liste d'attente avec courriel(s) éventuel(s)
 	
@@ -169,9 +180,11 @@
 		}
 		
 		// rechercher idActeur
-		$sql = "SELECT nomAdherent, prenomAdherent, statut, courrielAdherent FROM {$GLOBALS['prefixe']}adherent WHERE licenceAdherent='$idActeur'";
+		$sql = "SELECT nomAdherent, prenomAdherent, statut, courrielAdherent, actif FROM {$GLOBALS['prefixe']}adherent WHERE licenceAdherent='$idActeur'";
 		$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
 		$acteur = mysqli_fetch_assoc ($res);
+		// refus des comptes inactifs
+		if ($acteur['actif']=='non') die('Accès interdit');
 		$_SESSION['nomActeur'] = $acteur['nomAdherent'];
 		$_SESSION['prenomActeur'] = $acteur['prenomAdherent'];
 		$_SESSION['courrielActeur'] = $acteur['courrielAdherent'];
@@ -185,7 +198,7 @@
 			$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
 			
 			if ($_SESSION['statut']>1) {
-				header('Location: gestionInscriptions.php');
+				header('Location: gestion.php');
 				exit();
 			}
 			else {
@@ -198,79 +211,10 @@
 			editerAdherent('insert');
 		}
 		
-	/*	
-		
-	// retourne un tableau :
-	// 'pwOK' T F
-	// 'adhérent'	T F
-	// 'animateur' T F
-	// 'référent' T F
-	// 'nbStatuts' 0 à 3
-		$tabStatut['pwOK'] = FALSE;
-		$tabStatut['adhérent'] = FALSE;
-		$tabStatut['animateur'] = FALSE;
-		$tabStatut['référent'] = FALSE;
-		$tabStatut['nbStatuts'] = 0;
-	//if (isset($_SESSION['connexion']['admin'])) {echo($pw." ; ".$idActeur); die();}
-		// admin
-		if($idActeur=="admin") {
-			$_SESSION['administrateur'] = TRUE;
-			$_SESSION['pw'] = $pw;
-			$tabStatut['pwOK'] = TRUE;
-			$_SESSION['idClub'] = "04680";
-			$tabStatut['animateur'] = TRUE;
-			$tabStatut['référent'] = TRUE;
-			$tabStatut['adhérent'] = TRUE;
-			$tabStatut['nbStatuts'] = 3;
-			$_SESSION['idActeur'] = "0651411V";
-	//die("#389");
-			return $tabStatut;
-			// c'est terminé pour admin !
-		}
-
-		// mot de passe
-		$sql = "SELECT idClub FROM club WHERE motDePasseClub = '".$pw."'";
-		$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
-		$ligne = mysqli_fetch_assoc ($res);
-		if (!($ligne)) {
-			$_SESSION['pw'] = $pw;
-			$tabStatut['pwOK'] = FALSE;
-			return $tabStatut; // = pw pas reconnu => c'est terminé !
-		}
-		else {
-			$_SESSION['idClub'] = $ligne['idClub'];
-			$tabStatut['pwOK'] = TRUE; // pw reconnu
-		}
-
-		// adhérent 
-		$sql = "SELECT * FROM adherent, club WHERE licenceadherent='$idActeur' AND clubId= idClub AND motDePasseClub='$pw'";
-		$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
-		$ligne = mysqli_fetch_assoc ($res);
-		if ($ligne) {
-			$tabStatut['adhérent'] = TRUE;
-			$tabStatut['nbStatuts']++;
-		}	
-		// animateur
-		$sql = "SELECT * FROM animateur, club WHERE licenceAnimateur='$idActeur' AND clubId= idClub AND motDePasseClub='$pw'";
-		$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
-		$ligne = mysqli_fetch_assoc ($res);
-		if ($ligne) { 
-			$tabStatut['animateur'] = TRUE;
-			$tabStatut['nbStatuts']++;
-		}	
-		// référent
-		$sql = "SELECT * FROM referent, club WHERE licencereferent='$idActeur' AND clubId= idClub AND motDePasseClub='$pw'";
-		$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
-		$ligne = mysqli_fetch_assoc ($res);
-		if ($ligne) {
-			$tabStatut['référent'] = TRUE;
-			$tabStatut['nbStatuts']++;
-		}
-		return $tabStatut;
-	*/
 	} // fin function verifierActeur
 
 	function editerAdherent($mode) { // insert ou update
+	// appelée par inscription.php et gestion.php
 		if ($mode=='update') {
 			$sql = "SELECT licenceAdherent, statut, actif, nomAdherent, prenomAdherent, courrielAdherent, mobileAdherent, dateLimiteAttenteAdherent FROM {$GLOBALS['prefixe']}adherent WHERE licenceAdherent='{$_SESSION['idActeur']}' ";
 			$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
@@ -297,6 +241,18 @@
 		$tabStatut[3] = "administrateur";
 		$tabStatut[5] = "administrateur et animateur";
 		$tabStatut[10] = "super-administrateur";
+		$tabStatut[12] = "super-administrateur et animateur";
+		
+		if ($_SESSION['statut']>1) {
+			$scriptRetour = 'gestion.php';
+		}
+		else {
+			$scriptRetour = 'inscriptions.php';
+		}
+		
+		// pour accès aux données personnelles
+		$_SESSION['licencePerso'] = $_SESSION['idActeur'];
+
 
 	?>
 	<!DOCTYPE html>
@@ -321,7 +277,6 @@
 				<br><br><br>
 				<hr>
 					<table>
-
 							<tbody>
 							<tr>
 								<td class="tdGauche">
@@ -376,7 +331,7 @@
 									votre adresse de courriel : 
 								</td>
 								<td class="tdDroite">
-									<input required="required" type="text"  name="courrielAdherent"   id="courrielAdherent"  value="<?php echo($courriel);?>" style="font-size:small;  width:150px;">
+									<input required="required" type="text"  name="courrielAdherent"   id="courrielAdherent"  value="<?php echo($courriel);?>" style="font-size:small;  width:250px;">
 								</td>
 							</tr>
 							<tr>
@@ -390,15 +345,37 @@
 
 							<tr>
 								<td  class="tdGauche">
-									puis cliquez sur : 
+									enregistrer les modifications : 
 								</td>
 								<td class="tdDroite">
-									<input value="Envoyer" name="Envoyer" type="submit" style="font-size:medium; font-weight:bold; width:150px;" >
+									<input value="Envoyer" name="Envoyer" type="submit" style="font-size:medium; font-weight:bold; width:250px;" >
 								</td>
 							</tr>
 
+							<tr>
+								<td  class="tdGauche">
+									quitter sans enregistrer : 
+								</td>
+								<td class="tdDroite">
+									<button type="button" style="width: 250px" onClick = "document.location.href='<?php echo $scriptRetour;?>';">Retour</button>
+								</td>
+							</tr>
 							</tbody>
 						</table>
+				<hr>
+					<table>
+						<tbody>
+							<tr>
+								<td class="tdGauche">
+									accéder aux données personnelles : 
+								</td>
+								<td class="tdDroite">
+									<button type="button" style="font-weight: bold; width: 250px" onClick = "window.open('donneesPerso.php?licencePerso=<?php echo $_SESSION['idActeur'];?>','_blank');">Données personnelles</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
 					</form>
 				<hr>
 				</div>

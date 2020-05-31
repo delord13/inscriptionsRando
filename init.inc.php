@@ -5,6 +5,7 @@
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 */
+
 	// contrôle de l'initialisation de l'application
 	if (!file_exists('param.inc.php')) { 				
 		header("Location: initialiser.php");
@@ -75,6 +76,17 @@
 		$tabDate = explode('-',$laDate);
 		return ($tabDate[2]."/".$tabDate[1]."/".$tabDate[0]);
 	}
+	
+// fonction nationaliserDateHeure
+	function nationaliserDateHeure($laDateHeure) {
+//		2020-05-28 11:49:11
+		$tabDateHeure = explode(' ',$laDateHeure);
+		$tabDate = explode('-',$tabDateHeure[0]);
+		$tabHeure = explode(':',$tabDateHeure[1]);
+		
+		return ($tabDate[2]."/".$tabDate[1]."/".$tabDate[0].' '.$tabHeure[0].'&nbsp'.'h '.$tabHeure[1].'&nbsp'.'min '.$tabHeure[2].'&nbsp'.'s');
+	}
+	
 	
 // fonction jourDate
 	function jourDateFr($laDate) {

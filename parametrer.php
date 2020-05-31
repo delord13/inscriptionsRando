@@ -1,5 +1,7 @@
 <?php
 // parametrer.php
+// appelé à la fin d'initialiser.php
+// et par gestion.php
 
 	// session start
 	session_start();
@@ -402,7 +404,7 @@ EOT;
 		fclose($fp);
 //die("OK");
 
-		$GLOBALS['titrePage'] = "Fin du paramétrage de l'application'";
+		$GLOBALS['titrePage'] = "Fin du paramétrage de l'application";
 		$GLOBALS['titrePageCourt'] = $GLOBALS['titrePage'];
 
 		include("headHTML.inc.php");
@@ -430,7 +432,7 @@ EOT;
 			$html = <<<EOT
 			<p style='text-align: center;'>Cliquez sur le bouton pour ouvrir l'application :</p>
 			<br>
-			<button type="button" title="Enregistrer" style="font-weight: bold;  font-size: medium;" 		onClick="document.getElementById('formParam').submit();"> Terminer </button>
+			<button type="button" title="Ouvrir" style="font-weight: bold;  font-size: medium;" 		onClick="document.getElementById('formParam').submit();"> Ouvrir l'application </button>
 EOT;
 		}
 		else {
@@ -438,7 +440,7 @@ EOT;
 			<p style='text-align: center;'>Cliquez sur le bouton pour retourner à l'application :</p>
 			<br>
 			<p style='text-align: center;'>
-				<button type="button" title="Enregistrer" style="font-weight: bold;  font-size: medium;" onClick="document.getElementById('formParam').submit();"> Terminer </button>
+				<button type="button" title="Retour" style="font-weight: bold;  font-size: medium;" onClick="document.getElementById('formParam').submit();"> Retourner au menu </button>
 			</p>
 			<br><br><br><br>
 EOT;
@@ -465,7 +467,7 @@ EOT;
 			// détruire variables de session
 			$_SESSION = array();
 		}
-		else $scriptCible = "gestionInscriptions.php";
+		else $scriptCible = "gestion.php";
 		header("Location: $scriptCible");
 		exit;
 	} // fin function terminer

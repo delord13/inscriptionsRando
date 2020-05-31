@@ -101,11 +101,13 @@ EOT;
 				if ($seanceSupprimee) echo"<p style='color: red;'>Attention sortie supprimée ! Les inscrits ont été informés par courriel.</p>";
 			?>
 				<br>
+			<div id="divNonImprimable">
 				<p style="text-align: center;">
 				<input type="button" id="boutonImprimer" onclick="javascript:window.print();" value="Imprimer la page" />&nbsp; &nbsp; &nbsp; 
 				<input type="button" id="boutonFermer" onclick="javascript:window.close();" value="Fermer cet onglet" />
 				</p>
 				<br>
+			</div>
 			
 				<h3> Inscrits·e·s</h3>
 				<table border=1 style="width: 100%; border-collapse: collapse;">
