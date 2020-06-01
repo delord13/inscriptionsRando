@@ -72,21 +72,25 @@ Pour pouvoir installer l'application, il faut disposer :
 - un moyen de déposer des fichiers sur cet hébergement (accès FTP ou gestionnaire de fichier en ligne du compte d'hébergement)
 
 La procédure d'installation est la suivante :
-1. déposer dans un répertoire  de l'hébergement que vous avez créé pour l'application, tout le contenu du fichier zip "inscriptionsRando.zip" après l'avoir décompressé;
-2. recueillir les informations sur la base de données partagée ou créée pour l'application :
+1. télécharger l'application à l'adresse https://github.com/delord13/inscriptionsRando : cliquer sur le bouton vert "Clone or Download" puis sur Download ZIP
+2. décompresser le fichier "inscriptionsRando-master.zip" obtenu par téléchargement
+3. déposer dans un répertoire  de l'hébergement que vous avez créé pour l'application, tout le contenu du fichier zip "inscriptionsRando.zip" décompressé;
+4. recueillir les informations sur la base de données partagée ou créée pour l'application :
 - nom d'hôte (serveur MySQL)
 - nom de la base de données
 - nom de l'utilisateur qui a les droits sur la base de données
 - mot de passe de cet utilisateur
-3. choisir un préfixe pour les noms de tables de l'application (indispensable en cas de base de données partagée afin d'éviter d'écraser d'autres tables appartenant à d'autres applications ;
-4. lancer le script initialiser.php et fournir les informations demandées concernant la base de données ; à la fin de cette étape, les tables nécessaires à l'application sont créées dans la base de données ; attention ! les éventuelles tables portant le même nom sont écrasées et leur contenu perdu ; le script initialiser.php est automatiquement effacé pour éviter une réinitialisation accidentelle de l'application (il est souhaitable d'en conserver une copie pour pouvoir recommencer l'initialisation si nécessaire) ;
-5. à la fin de l'initialisation, un formulaire est proposé automatiquement : il permet de paramétrer l'application ;
-6. le paramétrage se termine avec la génération automatique du fichier param.inc.ph qui contient les paramètres définis ; on peut alors se connecter sur la page d'accueil de l'application et s'enregistrer comme super-administrteur.
+5. choisir un préfixe pour les noms de tables de l'application (indispensable en cas de base de données partagée afin d'éviter d'écraser d'autres tables appartenant à d'autres applications ;
+6. lancer le script initialiser.php et fournir les informations demandées concernant la base de données ; à la fin de cette étape, les tables nécessaires à l'application sont créées dans la base de données ; attention ! les éventuelles tables portant le même nom sont écrasées et leur contenu perdu ; le script initialiser.php est automatiquement effacé pour éviter une réinitialisation accidentelle de l'application (il est souhaitable d'en conserver une copie pour pouvoir recommencer l'initialisation si nécessaire) ;
+7. à la fin de l'initialisation, un formulaire est proposé automatiquement : il permet de paramétrer l'application ;
+8. le paramétrage se termine avec la génération automatique du fichier param.inc.ph qui contient les paramètres définis ; on peut alors se connecter sur la page d'accueil de l'application et s'enregistrer comme super-administrteur.
 
 ## Mise à jour de l'application
 Pour mettre à jour l'application avec une version plus récente, il suffit de :
-1. d'effacer tous les fichiers et tous les sous-repertoire qui se trouvent dans le répertoire de l'application SAUF LE FICHIER "param.inc.php" ;
-2. déposer dans le répertoire  de l'application, tout le contenu du fichier zip "inscriptionsRando.zip" de la nouvelle version après l'avoir décompressé.
+1. télécharger la nouvelle version de l'application à l'adresse https://github.com/delord13/inscriptionsRando : cliquer sur le bouton vert "Clone or Download" puis sur Download ZIP
+2. décompresser le fichier zip "inscriptionsRando-master.zip"
+3. effacer tous les fichiers et tous les sous-repertoires qui se trouvent dans le répertoire de l'application **SAUF LE FICHIER "param.inc.php"** qui contient les paramètres que vous avez choisi ;
+4. déposer dans le répertoire  de l'application, tout le contenu du fichier zip "inscriptionsRando-master.zip" de la nouvelle version après l'avoir décompressé.
 
 ## Licence ##
 Copyright Michel Delord 26/05/2020 logiciel libre sous licence CeCILL compatible avec la licence GNU GPL ; la licence est consultable à l'adresse : 
