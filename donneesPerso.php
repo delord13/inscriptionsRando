@@ -231,7 +231,7 @@ else echo "Aucune inscription";
 	// si statut d'animateur : lister les sorties animées par l'adhérent
 	if ($adherent['statut']==2 OR $adherent['statut']==5 OR $adherent['statut']==12) {
 		// chargement des sorties animées
-		$sql = "SELECT nomSeance, dateSeance, lieuRDVSeance FROM ins_seanceAnimateur, ins_seance WHERE seanceId=idSeance AND animateurLicence='{$adherent['licenceAdherent']}' ORDER BY nomSeance";
+		$sql = "SELECT nomSeance, dateSeance, lieuRDVSeance FROM {$GLOBALS['prefixe']}seanceAnimateur, {$GLOBALS['prefixe']}seance WHERE seanceId=idSeance AND animateurLicence='{$adherent['licenceAdherent']}' ORDER BY nomSeance";
 //die($sql);
 		$res = mysqli_query($GLOBALS['lkId'],$sql);
 		while ($unesortie=mysqli_fetch_assoc ($res)) {
