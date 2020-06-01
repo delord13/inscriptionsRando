@@ -142,8 +142,8 @@
 				break;
 				
 // paramétrer
-			case "paramétrer" :
-				$_SESSION['scriptOrigine'] = "gestionInscriptions.php";
+			case "parametrer" :
+				$_SESSION['scriptOrigine'] = "gestion.php";
 				header("Location: parametrer.php");
 				exit;
 			case "retourner" :
@@ -1316,7 +1316,7 @@ if ($licenceAdherent=='0952931U') {
 ?>
 
 	<body onLoad="redim();">
-	<form method="POST" name="formGestion" id="formGestion" action="gestionInscriptions.php" >
+	<form method="POST" name="formGestion" id="formGestion" action="gestion.php" >
 		<input type="hidden" name="newAction" id="newAction" value="">
 		<input type="hidden" name="idSeance" id="idSeance" value="<?php echo($idSeance); ?>">
 
@@ -1458,7 +1458,7 @@ if ($licenceAdherent=='0952931U') {
 						</td>
 						<td class="tdTitre" style="text-align: center;">
 								Quitter sans enregistrer : 
-								<button type="button" title="Quitter sans enregistrer" onClick="document.getElementById('newAction').value='retourner'; document.getElementById('formGestion').action='gestionInscriptions.php'; document.getElementById('formGestion').submit();">
+								<button type="button" title="Quitter sans enregistrer" onClick="document.getElementById('newAction').value='retourner'; document.getElementById('formGestion').action='gestion.php'; document.getElementById('formGestion').submit();">
 								<img alt="" src="images/sortir.png">
 								</button>
 						</td>

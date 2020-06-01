@@ -781,41 +781,48 @@ error_reporting (E_ALL);
 				</p>
 			<table style="width: 100%;">
 				<tbody>
-						<tr>
-							<td colspan=3>
-								<p style="font-size: x-small; font-style: italic;">
-									Les données personnelles que vous fournissez ne servent qu'à l'organisation de activités du club. Ces données ne sont pas communiquées à l'extérieur du club. Vous disposez d'un droit d’opposition, d’accès et de rectification concernant ces données personnelles que vous pouvez exercer en cliquant sur : <img alt="message" src="images/courriel0.png" style="position: relative; top: 4px;" onclick="window.open('droitsDoneesPersonnelles.php');"></button>
-
-								</p>
-							</td>
-						</tr>
 					<tr>
-						<td class="tdTitre" style="text-align: center; width: 33%;">
-<?php 
-	if ($_SESSION['statut']>1) {
-?>
-								Menu de gestion : 
-								<button type=button title="Menu de gestion pour animateur et administrateur" onClick="var formulaire=document.getElementById('formInscription') ; formulaire.action='gestion.php'; formulaire.newAction.value='gestion'; formulaire.submit();">
-								<img alt="modifier" src="images/gerer16.png">
-								</button>
-<?php 
-	}
-?>
+						<td colspan=3>
+							<p style="font-size: x-small; font-style: italic;">
+								Les données personnelles que vous fournissez ne servent qu'à l'organisation de activités du club. Ces données ne sont pas communiquées à l'extérieur du club. Vous disposez d'un droit d’opposition, d’accès et de rectification concernant ces données personnelles que vous pouvez exercer en cliquant sur : <img alt="message" src="images/courriel0.png" style="position: relative; top: 4px;" onclick="window.open('droitsDoneesPersonnelles.php');"></button>
 
+							</p>
 						</td>
-						<td class="tdTitre" style="text-align: center; width: 33%;">
+					</tr>
+
+					<tr>
+						<td class="tdTitre" style="text-align: center; width: 50%;">
 								Modifier votre compte : 
 								<button type=button title="Modifier nom, prénom, adresse de courriel, numéro de mobile" onClick="var formulaire=document.getElementById('formInscription') ; formulaire.action='index.php'; formulaire.newAction.value='modifierAdherent'; formulaire.submit();">
 								<img alt="modifier" src="images/edit-tool.png">
 								</button>
 
 						</td>
+<?php 
+if ($_SESSION['statut']==1) {
+?>
 						<td class="tdTitre" style="text-align: center;">
 								Quitter : 
 								<button type=button title="Se déconnecter" onClick="document.getElementById('newAction').value='quitter'; document.getElementById('formInscription').submit();">
 								<img alt="quitter" src="images/sortir.png">
 								</button>
 						</td>
+<?php 
+	}
+	else {
+?>
+						<td class="tdTitre" style="text-align: center;">
+								Retour au menu de gestion : 
+								<button type=button title="Menu de gestion pour animateur et administrateur" onClick="var formulaire=document.getElementById('formInscription') ; formulaire.action='gestion.php'; formulaire.newAction.value='gestion'; formulaire.submit();">
+								<img alt="retour" src="images/gerer16.png">
+								</button>
+						</td>
+
+<?php 
+	}
+?>
+
+						
 					</tr>
 				</tbody>
 			</table>

@@ -26,7 +26,6 @@
 		}
 	}
 	else {
-
 		editerParametres();
 	}
 	
@@ -313,7 +312,7 @@
 						<tbody>
 							<tr>
 EOT;
-		if ($_SESSION['scriptOrigine']=='gestionInscriptions.php') { 
+		if ($_SESSION['scriptOrigine']=='gestion.php') { 
 			$html .= <<<EOT
 								<th style="width: 50%;">
 									<button type="button" title="Quitter" style="font-weight: bold;  font-size: medium;" onClick="document.location.href='{$_SESSION['scriptOrigine']}';"> Quitter sans enregistrer </button>

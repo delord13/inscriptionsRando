@@ -48,7 +48,7 @@
 				break;
 				
 			case "gestion":
-				header("Location: gestionInscriptions.php");
+				header("Location: gestion.php");
 				exit;
 				break;
 				
@@ -244,7 +244,7 @@
 		$tabStatut[12] = "super-administrateur et animateur";
 		
 		if ($_SESSION['statut']>1) {
-			$scriptRetour = 'gestion.php';
+			$scriptRetour = 'inscriptions.php';
 		}
 		else {
 			$scriptRetour = 'inscriptions.php';
@@ -408,7 +408,7 @@
 			$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysqli_error($GLOBALS['lkId']));
 		}
 			if ($_SESSION['statut']>1) {
-				header('Location: gestionInscriptions.php');
+				header('Location: inscriptions.php');
 				exit();
 			}
 			else {
