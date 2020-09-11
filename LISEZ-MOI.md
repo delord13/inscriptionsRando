@@ -72,7 +72,7 @@ Pour pouvoir installer l'application, il faut disposer :
 - un moyen de déposer des fichiers sur cet hébergement (accès FTP ou gestionnaire de fichier en ligne du compte d'hébergement)
 
 La procédure d'installation est la suivante :
-1. télécharger l'application à l'adresse https://github.com/delord13/inscriptionsRando : cliquer sur le bouton vert "Clone or Download" puis sur Download ZIP
+1. télécharger l'application à l'adresse https://github.com/delord13/inscriptionsRando : cliquer sur le bouton vert "Clone" puis sur Download ZIP
 2. décompresser le fichier "inscriptionsRando-master.zip" obtenu par téléchargement
 3. déposer dans un répertoire  de l'hébergement que vous avez créé pour l'application, tout le contenu du fichier zip "inscriptionsRando.zip" décompressé;
 4. recueillir les informations sur la base de données partagée ou créée pour l'application :
@@ -87,7 +87,7 @@ La procédure d'installation est la suivante :
 
 ## Mise à jour de l'application
 Pour mettre à jour l'application avec une version plus récente, il suffit de :
-1. télécharger la nouvelle version de l'application à l'adresse https://github.com/delord13/inscriptionsRando : cliquer sur le bouton vert "Clone or Download" puis sur Download ZIP
+1. télécharger la nouvelle version de l'application à l'adresse https://github.com/delord13/inscriptionsRando : cliquer sur le bouton vert "Clone" puis sur Download ZIP
 2. décompresser le fichier zip "inscriptionsRando-master.zip"
 3. effacer tous les fichiers et tous les sous-repertoires qui se trouvent dans le répertoire de l'application **SAUF LE FICHIER "param.inc.php"** qui contient les paramètres que vous avez choisi ;
 4. déposer dans le répertoire  de l'application, tout le contenu du fichier zip "inscriptionsRando-master.zip" de la nouvelle version après l'avoir décompressé.
