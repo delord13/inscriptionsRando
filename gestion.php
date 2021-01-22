@@ -825,7 +825,7 @@ EOT;
 			$idSeance =  mysqli_insert_id($GLOBALS['lkId']);
 
 			// ajout des animateurs
-			foreach ($_POST[licenceAnimateur] AS $animateurLicence) {
+			foreach ($_POST['licenceAnimateur'] AS $animateurLicence) {
 				$sql = "INSERT INTO {$GLOBALS['prefixe']}seanceAnimateur (idSeanceAnimateur, seanceId, animateurLicence) VALUES (NULL, {$_POST['idSeance']}, '$animateurLicence')";
 				$res = mysqli_query ($GLOBALS['lkId'], $sql);
 			}
@@ -2110,7 +2110,7 @@ EOT;
 		// recherche des sorties à supprimer
 		$sql = "SELECT idSeance FROM {$GLOBALS['prefixe']}seance WHERE dateSeance<'{$_POST['dateNonComprise']}'";
 		$res = mysqli_query($GLOBALS['lkId'],$sql);
-		while ($sortie = mysqli_fetch_assoc ($res)) {
+		while ($uneSortie = mysqli_fetch_assoc ($res)) {
 			$idSeance[] = $uneSortie['idSeance'];
 		}
 		

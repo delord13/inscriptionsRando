@@ -183,14 +183,14 @@
 		$sql = "SELECT nomAdherent, prenomAdherent, statut, courrielAdherent, actif FROM {$GLOBALS['prefixe']}adherent WHERE licenceAdherent='$idActeur'";
 		$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
 		$acteur = mysqli_fetch_assoc ($res);
-		// refus des comptes inactifs
-		if ($acteur['actif']=='non') die('Accès interdit');
-		$_SESSION['nomActeur'] = $acteur['nomAdherent'];
-		$_SESSION['prenomActeur'] = $acteur['prenomAdherent'];
-		$_SESSION['courrielActeur'] = $acteur['courrielAdherent'];
 		
 		// si déjà inscrit : mettre à jour statut
 		if ($acteur) {
+			// refus des comptes inactifs
+			if ($acteur['actif']=='non') die('Accès interdit');
+			$_SESSION['nomActeur'] = $acteur['nomAdherent'];
+			$_SESSION['prenomActeur'] = $acteur['prenomAdherent'];
+			$_SESSION['courrielActeur'] = $acteur['courrielAdherent'];
 			if (($acteur['statut']+$_SESSION['statut'])==5) $_SESSION['statut'] = 5; // administrateur et animateur
 			if (($acteur['statut']+$_SESSION['statut'])==12) $_SESSION['statut'] = 12; // administrateur et animateur
 			if ($acteur['statut']<$_SESSION['statut'])
