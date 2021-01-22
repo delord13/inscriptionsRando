@@ -2,7 +2,10 @@
 // gestion.php
 
 	session_start();
-//var_dump($_SESSION); die();
+/*	
+	error_reporting(E_ALL);
+	ini_set("display_errors", 1);
+*/
 // $_SESSION['idActeur']
 // $_SESSION['statut']
 // $_SESSION['idClub']
@@ -89,8 +92,8 @@
 			case "gererSorties" :
 				afficherSeances($message);
 				break;
-			case "supprimerSortie" :
-				$message = supprimerSeance();
+			case "supprimerDefinitivementSortie" :
+				$message = supprimerDefinitivementSeance();
 				afficherSeances($message);
 				break;
 			case "ajouterSortie" :
@@ -377,24 +380,20 @@ SELECT * FROM inscription, adherent, club, seance, animateur WHERE adherentLicen
 		// calcul inscrits non annulés
 		$sql = "SELECT COUNT(idInscription) AS nbInscrits FROM {$GLOBALS['prefixe']}inscription WHERE seanceId={$uneSeance['idSeance']} AND (attenteInscription IS NULL OR attenteInscription=-1) AND dateHeureAnnulationInscription IS NULL ";
 		$res = mysqli_query ($GLOBALS['lkId'], $sql);
-//echo($sql."<br>\n");
 		$ligne = mysqli_fetch_assoc ($res);
 		$nbInscrits = $ligne['nbInscrits'];
 		// calcul enAttente non annulés
 		$sql = "SELECT COUNT(idInscription) AS nbEnAttente FROM {$GLOBALS['prefixe']}inscription WHERE seanceId={$uneSeance['idSeance']} AND attenteInscription >0 AND dateHeureAnnulationInscription IS NULL";
-//echo($sql."<br>\n");
 		$res = mysqli_query ($GLOBALS['lkId'], $sql);
 		$ligne = mysqli_fetch_assoc ($res);
 		$nbEnAttente = $ligne['nbEnAttente'];
 		// calcul absents
 		$sql = "SELECT COUNT(idInscription) AS nbAbsences FROM {$GLOBALS['prefixe']}inscription WHERE seanceId={$uneSeance['idSeance']} AND absenceInscription IS NOT NULL";
-//echo($sql."<br>\n");
 		$res = mysqli_query ($GLOBALS['lkId'], $sql);
 		$ligne = mysqli_fetch_assoc ($res);
 		$nbAbsences = $ligne['nbAbsences'];
 		// calcul de animateurSeance vrai si c'est une séance de l'animateur
 		$animateurSeance = in_array($_SESSION['idActeur'],$uneSeance['animateurLicence']);
-		//$uneSeance['animateurLicence']==$_SESSION['idActeur'];
 		// calcul actions  pour référent lister inscrits
 		// style pour séance supprimée
 		if ($seanceSupprimee) echo('<tr  style= "font-style: italic; color: rgb(64,128,128); " >');
@@ -443,6 +442,18 @@ SELECT * FROM inscription, adherent, club, seance, animateur WHERE adherentLicen
 								</button>
 	<?php
 			}
+			if ($seanceSupprimee && $_SESSION['statut']>2) {
+	?>
+								<button class = "boutonFiche" type="button" title="supprimer définitivement la sortie"
+									onClick="if (confirm('Attention ! La sortie va être définitivement effacée,  les éventuelles inscriptions seront définitvement effacées. Cliquez sur `OK` pour confirmer ou sur `Annuler` pour abandonner.')) 
+									{
+										document.getElementById('newAction').value='supprimerDefinitivementSortie'; document.getElementById('idSeance').value='<?php echo($uneSeance['idSeance']);?>'  ; document.getElementById('formGestion').submit();
+									}"
+									> 
+									<img alt="lister" src="images/close.png">
+								</button>
+	<?php		
+			}
 	?>
 
 	<?php
@@ -462,16 +473,6 @@ SELECT * FROM inscription, adherent, club, seance, animateur WHERE adherentLicen
 	<?php
 	
 			
-				if (!$seanceSupprimee && !$seancePassee) {
-	?>
-								<button class = "boutonFiche" type="button" title="annuler cette sortie" onClick="if (confirm('Attention ! La sortie va être supprimée définitivement et les éventuels inscrits en seront informés. Cliquez sur `OK` pour confirmer ou sur `Annuler` pour abandonner.')) {document.getElementById('newAction').value='supprimerSortie'; 
-									document.getElementById('idSeance').value='<?php echo($uneSeance['idSeance'])?>';
-									document.getElementById('formGestion').submit();}"
-									> 
-									<img alt="supprimer" src="images/close.png">
-								</button>
-	<?php
-				}
 			}
 
 			
@@ -554,12 +555,10 @@ SELECT * FROM inscription, adherent, club, seance, animateur WHERE adherentLicen
 			$seance['heureRDVSeance'] = substr($seance['heureRDVSeance'],0,5);
 			// ses animateurs
 			$sql = "SELECT licenceAdherent FROM {$GLOBALS['prefixe']}adherent, {$GLOBALS['prefixe']}seanceAnimateur WHERE licenceAdherent=animateurLicence AND seanceId={$_POST['idSeance']} ";
-//die($sql);
 			$res = mysqli_query ($GLOBALS['lkId'], $sql);
 			while( $unAnimateur = mysqli_fetch_assoc ($res)) {
 				$seance['animateurLicence'][] = $unAnimateur['licenceAdherent'];
 			}
-//var_dump($seance); die;
 			
 		} // fin charger séance et ses animateurs
 		else { 
@@ -570,7 +569,7 @@ SELECT * FROM inscription, adherent, club, seance, animateur WHERE adherentLicen
 			$seance['dateSeance'] = $dateMaintenantDB;
 			$seance['heureRDVSeance'] = '08:00';
 			$seance['lieuRDVSeance'] = '';
-			$seance['maxSeance'] = 9;
+			$seance['maxSeance'] = 5;
 			$seance['supprimeeSeance'] = 'N';
 		}
 		
@@ -624,7 +623,7 @@ EOT;
 		} // pour chaque animateur possible
 		
 		$selectSupprimee = <<<EOT
-			<select name="supprimeeSeance">
+			<select name="supprimeeSeance" >
 				<option value='N' 
 EOT;
 		if($seance['supprimeeSeance']=='N') $selectSupprimee .= ' selected '; 
@@ -635,7 +634,7 @@ EOT;
 		if($seance['supprimeeSeance']=='O') $selectSupprimee .= ' selected ';
 		$selectSupprimee .= <<<EOT
 				> oui </option>
-			</select>
+			</select> <span style="font-size: 8pt;">En cas de changement, les éventuels inscrits seront informés par courriel.</span>
 EOT;
 
 
@@ -808,14 +807,13 @@ EOT;
 	} // fin function editerSeance
 
 	function enregistrerSeance() {
-//var_dump($_POST);die();		
 		// insert ou update ??
 		if ($_POST['idSeance']=='') $mode ='insert';
 		else $mode = 'update';
 		
 		// echappement des POST
 		foreach ($_POST AS $key => $value) {
-			if ($key!='licenceAnimateur') $_POST[$key] = addslashes($value);
+//			if ($key!='licenceAnimateur') $_POST[$key] = addslashes($value);
 		}
 		
 		if ($mode=='insert') { // ajout nouvelle sortie et animateurs 
@@ -848,8 +846,8 @@ EOT;
 			$retablissement = $supprimeeOldSeance=='O' && $_POST['supprimeeSeance']=='N';
 			if ($suppression) { // informer annulation
 				$sql = "SELECT * FROM {$GLOBALS['prefixe']}adherent, {$GLOBALS['prefixe']}inscription WHERE licenceAdherent = adherentLicence AND seanceId = '{$_POST['idSeance']}' AND dateHeureAnnulationInscription IS NULL";
-				$res = mysqlmd_query ($GLOBALS['lkId'], $sql) or die (mysqlmd_error($GLOBALS['lkId']));
-				while ($inscription = mysqlmd_fetch_assoc ($res)) {
+				$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysqli_error($GLOBALS['lkId']));
+				while ($inscription = mysqli_fetch_assoc ($res)) {
 					$destinataire = $inscription['courrielAdherent'];
 					$de = $GLOBALS['courrielClub'];
 					$sujet = $GLOBALS['nomClub']." : annulation de sortie";
@@ -870,8 +868,8 @@ EOT;
 			}
 			if ($retablissement) { // informer rétablissement
 				$sql = "SELECT * FROM {$GLOBALS['prefixe']}adherent, {$GLOBALS['prefixe']}inscription WHERE licenceAdherent = adherentLicence AND seanceId = '{$_POST['idSeance']}' AND dateHeureAnnulationInscription IS NULL";
-				$res = mysqlmd_query ($GLOBALS['lkId'], $sql) or die (mysqlmd_error($GLOBALS['lkId']));
-				while ($inscription = mysqlmd_fetch_assoc ($res)) {
+				$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysqli_error($GLOBALS['lkId']));
+				while ($inscription = mysqli_fetch_assoc ($res)) {
 					$destinataire = $inscription['courrielAdherent'];
 					$de = $GLOBALS['courrielClub'];
 					$sujet = $GLOBALS['nomClub']." : rétablissement de sortie annulée";
@@ -897,7 +895,6 @@ EOT;
 			// ajout des seanceAnimateur
 			foreach ($_POST['licenceAnimateur'] AS $animateurLicence) {
 				$sql = "INSERT INTO {$GLOBALS['prefixe']}seanceAnimateur(idSeanceAnimateur, seanceId, animateurLicence) VALUES (NULL, {$_POST['idSeance']}, '$animateurLicence')";
-//die($sql);
 				$res = mysqli_query ($GLOBALS['lkId'], $sql);
 			}
 			
@@ -907,53 +904,25 @@ EOT;
 		return($message);	
 	} // fin enregistrerSeance
 	
-	function supprimerSeance() {
-		// la séance
-		$sql = "SELECT * FROM `seance` WHERE `idSeance`={$_POST['idSeance']}";
-		$res = mysqlmd_query ($GLOBALS['lkId'], $sql);
-		$seance = mysqlmd_fetch_assoc ($res);
+	function supprimerDefinitivementSeance() {
+
+		// la seance
+		$sql = "DELETE FROM `{$GLOBALS['prefixe']}seance` WHERE `idSeance`={$_POST['idSeance']}";
+		$res = mysqli_query ($GLOBALS['lkId'], $sql);
+		
+		// les inscrits DELETE FROM `ins_inscription` WHERE `seanceId`=
+		$sql = "DELETE FROM `{$GLOBALS['prefixe']}inscription` WHERE `seanceId`={$_POST['idSeance']}";
+		$res = mysqli_query ($GLOBALS['lkId'], $sql);
+		
+		// les "seanceAnimateur" DELETE FROM `ins_seanceAnimateur` WHERE `seanceId`
+		$sql = "DELETE FROM `{$GLOBALS['prefixe']}seanceAnimateur` WHERE `seanceId`={$_POST['idSeance']}";
+		$res = mysqli_query ($GLOBALS['lkId'], $sql);
 	
-		// enregistrement de la suppression de séance
-		$sql = "UPDATE `seance` SET `supprimeeSeance` = 'O' WHERE `seance`.`idSeance` ={$_POST['idSeance']}";
-//		$sql = "DELETE FROM `seance` WHERE `seance`.`idSeance` = {$_POST['idSeance']}";
-		$res = mysqlmd_query ($GLOBALS['lkId'], $sql) or die (mysqlmd_error($GLOBALS['lkId']));
+		return("La sortie et les éventuelles inscriptions à cette sortie ont été supprimées");
 		
-		// courriel aux inscrits non annulés, non en attente
-		$sql = "SELECT * FROM `adherent`, `inscription` WHERE `licenceAdherent` = `adherentLicence` AND `seanceID` = '{$_POST['idSeance']}' AND `dateHeureAnnulationInscription` IS NULL AND `attenteInscription` IS NULL ORDER BY `dateHeureInscription`";
-		$res = mysqlmd_query ($GLOBALS['lkId'], $sql) or die (mysqlmd_error($GLOBALS['lkId']));
-		enregistrerLog($_SESSION['idActeurMAC'],$_SESSION['statutMAC'],"suppression séance n°{$_POST['idSeance']} ");
-		$nbCourriels = 0;
-		while ($inscription = mysqlmd_fetch_assoc ($res)) {
-			$destinataire = $inscription['courrielAdherent'];
-			$de = $GLOBALS['courrielClub'];
-			$sujet = $GLOBALS['nomClub']." : annulation de sortie";
-			$prenom = utf8_encode_md($inscription['prenomAdherent']);
-			$nom = utf8_encode_md($inscription['nomAdherent']);
-
-			$codeHtml = "<html>";
-			$codeHtml .= "<p>à $prenom $nom</p><p> </p>";
-			$codeHtml .= "<p>Bonjour</p>";
-			$codeHtml .= "<p>Nous sommes désolés de vous informer que la sortie '{$seance['dateSeance']}'  du ".jourDateFr($seance['dateSeance'])." a été annulée.</p>";
-			$codeHtml .= "<p>Cordialement</p>";
-			$codeHtml .= "<p>Merci de ne pas répondre à ce message qui vous a été envoyé automatiquement.</p>";
-			$codeHtml .= "</html>";
-
-			if ($destinataire!='') envoyerCourriel($de,$destinataire,$sujet,$codeHtml);
-
-			$nbCourriels++;
-		}
-		$message = "La séance a été annulée";
-		if ($nbCourriels==0) $message.= ".";
-		else {
-			if ($nbCourriels==1) $message.= ", la personne inscrite a été informée.";
-			else $message.= ", les $nbCourriels personnes inscrites ont été informées.";
-		}
-		return($message);
-		
-	} // fin supprimerSeance
+	} // fin supprimerDefinitivementSeance
 
 	function enregistrerAbsences() {
-//var_dump($_POST); die();
 		// $_POST['idSeance']
 		// $_POST['absenceLicenceAdherent']
 		// $_POST['absenceExcuseeLicenceAdherent']
@@ -974,7 +943,6 @@ EOT;
 
 		// recherche de toutes les inscriptions
 		$sql = "SELECT * FROM {$GLOBALS['prefixe']}inscription WHERE seanceId=$idSeance";
-//die($sql);
  		$res = mysqli_query ($GLOBALS['lkId'], $sql);
 
 		// pour chaque inscription
@@ -986,55 +954,13 @@ EOT;
  			$res0 = mysqli_query ($GLOBALS['lkId'], $sql0);
 			$adherent = mysqli_fetch_assoc ($res0);
 			$destinataire = $adherent['courrielAdherent'];
-/*			
-if ($licenceAdherent=='0952931U') {
-	echo($licenceAdherent.'<br>\n');
-	var_dump($_POST['absenceLicenceAdherent']);
-	die();
-}
-*/
 
-/*
-////////////////////////////////////////////////////////////////////////////////////////////
-		// absence
-			// si absence cochée
-			if (isset($_POST['absenceLicenceAdherent']) && in_array($licenceAdherent,$_POST['absenceLicenceAdherent'])) {
-				// si pas enregistrée
-				if (is_null($inscription['absenceInscription'])) {
-					// enregistrer l'absence
-					$sql1 = "UPDATE inscription SET absenceInscription=1 WHERE seanceId=$idSeance AND adherentLicence='$licenceAdherent'";
-					$res1 = mysqli_query ($GLOBALS['lkId'], $sql1);
-					// si excusée cochée
-					if (isset($_POST['absenceExcuseeLicenceAdherent']) && in_array($licenceAdherent,$_POST['absenceExcuseeLicenceAdherent'])) {
-						// enregistrer l'excuse
-						$sql1 = "UPDATE inscription SET absenceExcuseeInscription=1 WHERE seanceId=$idSeance AND adherentLicence='$licenceAdherent'";
-						$res1 = mysqli_query ($GLOBALS['lkId'], $sql1);
-						// dépunir
-					}
-					// sinon (excuse noncochée)
-						// punir : un mois (de plus)
-						// annuler l'excuse qui traîne !
-				}
-			}
-			// sinon (absence  pas cochée)
-				// si absence enregistrée
-					// annuler l'absence (et l'excuse)
-					// dépunir (un mois de moins)
-				// sinon
-					// annuler l'excuse à tout hasard
-					
-		// annulation tardive
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-*/
 
 			// si absence excusée cochée
 			if (isset($_POST['absenceExcuseeLicenceAdherent']) && in_array($licenceAdherent,$_POST['absenceExcuseeLicenceAdherent'])) {
  				// si absence excusée non enregistrée, l'enregistrer
 				if (is_null($inscription['absenceExcuseeInscription'])) {
 					$sql1 = "UPDATE {$GLOBALS['prefixe']}inscription SET absenceExcuseeInscription=1 WHERE seanceId=$idSeance AND adherentLicence='$licenceAdherent'";
-//die($sql1);
 					$res1 = mysqli_query ($GLOBALS['lkId'], $sql1);
 				}
 			}
@@ -1043,7 +969,6 @@ if ($licenceAdherent=='0952931U') {
  				// si absence non enregistrée, l'enregistrer
 				if (is_null($inscription['absenceInscription'])) {
 					$sql1 = "UPDATE {$GLOBALS['prefixe']}inscription SET absenceInscription=1 WHERE seanceId=$idSeance AND adherentLicence='$licenceAdherent'";
-//die($sql1);
 					$res1 = mysqli_query ($GLOBALS['lkId'], $sql1);
 				}
 				// si sanction enregistrée
@@ -1147,13 +1072,6 @@ if ($licenceAdherent=='0952931U') {
 		} // fin pour chaque inscription	
 		
 		
-		// $_POST['idSeance']
-		// $_POST['absenceLicenceAdherent']
-		// $_POST['absenceExcuseeLicenceAdherent']
-		// $_POST['annulationLicenceAdherent']
-		// $_POST['annulationExcuseeLicenceAdherent']
-		
-		
 		// traitement des annulations tardives
 		// si existe(nt) annulation(s) tardive(s)
 		if (isset($_POST['annulationLicenceAdherent'])) {
@@ -1209,7 +1127,6 @@ if ($licenceAdherent=='0952931U') {
 				// sinon (sanction non enregistrée)
 				else {
 					// si non excusée
-//					if (!isset($_POST['annulationExcuseeLicenceAdherent'][$licenceAdherent])) {
 					if (!isset($_POST['annulationExcuseeLicenceAdherent']) || !in_array($licenceAdherent,$_POST['annulationExcuseeLicenceAdherent'])) {
 						// enregistrer dateLimiteAttenteInscription
 						$sql2 = "UPDATE{$GLOBALS['prefixe']} inscription SET dateLimiteAttenteInscription='$dateLimiteAttente' WHERE seanceId=$idSeance AND adherentLicence='$licenceAdherent'";
@@ -1233,56 +1150,6 @@ if ($licenceAdherent=='0952931U') {
 			} // fin pour chaque annulation
 		} // fin si existe annulation tardive
 
-/*	
-		
-	if (isset($_POST['absenceLicenceAdherent'])) {
-			$nbAbsents = 0;
-			foreach ($_POST['licenceAdherent'] AS $licenceAdherent ) {
-				$nbAbsents++;
-				// recherche de l'idInscription de l'absent'
-				$sql = "SELECT * FROM inscription WHERE seanceId={$_POST['idSeance']} AND adherentLicence='$licenceAdherent'";
-				$res = mysqli_query ($GLOBALS['lkId'], $sql);
-				$inscription = mysqli_fetch_assoc ($res);
-				$idInscription = $inscription['idInscription'];
-				
-				// si l'absence n'a pas déjà été enregistrée
-				if (is_null($inscription['absenceInscription']) ) {
-					// enregistrer l'absence
-					$sql = "UPDATE inscription SET absenceInscription=1 WHERE idInscription=$idInscription";
-
-					$res = mysqli_query ($GLOBALS['lkId'], $sql);
-					// recherche du courriel de licenceAdherent absent
-					$sql = "SELECT courrielAdherent FROM adherent WHERE licenceAdherent='$licenceAdherent'";
-					$res = mysqli_query ($GLOBALS['lkId'], $sql);
-					$adherent = mysqli_fetch_assoc ($res);
-					$destinataire = $adherent['courrielAdherent'];
-					// recherche séance
-					$sql = "SELECT * FROM seance WHERE idSeance={$_POST['idSeance']}";
-					$res = mysqli_query ($GLOBALS['lkId'], $sql);
-					$seance = mysqli_fetch_assoc ($res);
-					// avertir le puni
-					$debutTS = strtotime($seance['dateSeance']);
-					$dateLimiteAttenteAdherent = date("Y-m-d",$debutTS+(3600*24*30));
-					$sql = "UPDATE adherent SET dateLimiteAttenteAdherent = '$dateLimiteAttenteAdherent' WHERE adherent.licenceAdherent = '$licenceAdherent'";
-					$res = mysqli_query ($GLOBALS['lkId'], $sql);
-					$dateLimiteAttenteAdherent = nationaliserDate($dateLimiteAttenteAdherent);
-					$de = "mac.lc@free.fr";
-					$sujet = "absence à une séance ";
-					$codeHtml = "<html><p>Bonjour</p>";
-					$codeHtml .= "<p>Nous sommes au regret de vous informer qu'en raison de votre absence à la séance de  du ".jourDateFr($seance['dateSeance']).", rendez-vous :  {$seance['lieuRDVSeance']} à ".nationaliserHeure($seance['heureRDVSeance']).", vous serez placé(e) en liste d'attente lors de vos prochaines inscriptions jusqu'au $dateLimiteAttenteAdherent.</p>";
-					$codeHtml .= "<p>Cordialement</p>";
-					$codeHtml .= "<p>Merci de ne pas répondre à ce message qui vous a été envoyé automatiquement.</p>";
-					envoyerCourriel($destinataire,$sujet,$codeHtml);
-					enregistrerLog($_SESSION['idActeur'],$_SESSION['statut'],"information d'un absent $licenceAdherent");
-				}
-			}
-			if ($nbAbsents==1) return("L'absent est enregistré.");
-			else return("Les $nbAbsents absents sont enregistrés.");
-			enregistrerLog($_SESSION['idActeur'],$_SESSION['statut'],"enregistrement absence inscription n°{$_POST['idSeance']} ");
-		}
-		else return("Aucune absence enregistrée");
-*/	
-//  die("fin function enregistrerAbsences");
 	} // fin function enregistrerAbsences() 
 	
 	function gererAbsences($idSeance, $message) {
@@ -1307,7 +1174,6 @@ if ($licenceAdherent=='0952931U') {
 		while ($unTardif = mysqli_fetch_assoc ($res)) {
 			$tardif[] = $unTardif;
 		}
-//var_dump($tardif); die();		
 ?>
 <!DOCTYPE html>
 <html lang="fr-fr">
@@ -1861,19 +1727,7 @@ EOT;
 			else {
 			// insert
 				$sql = "INSERT INTO {$GLOBALS['prefixe']}adherent (licenceAdherent, statut, nomAdherent, prenomAdherent, courrielAdherent, mobileAdherent, dateLimiteAttenteAdherent) VALUES ('".$_POST['licenceAdherent']."', ".$_POST['statut'].", '".$_POST['nomAdherent']."', '".$_POST['prenomAdherent']."', '".$_POST['courrielAdherent']."', '".$_POST['mobileAdherent']."', NULL)";
-//die($sql);
 				$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysqli_error ($GLOBALS['lkId']));
-/*				
-				// courriel à admin
-				$destinataire = "mac.lc@free.fr";
-				$de = "mac.lc@free.fr";
-				$sujet = "nouvel adhérent";
-				$codeHtml = "<html><p>Bonjour</p>";
-				$codeHtml .= "<p>Voici les coordonnées du nouvel adhérent :</p>";
-				$codeHtml .= "<p>".$_POST['licenceAdherent']."', '".$_POST['nomAdherent']."', '".$_POST['prenomAdherent']."', '".$_POST['courrielAdherent']."', '".$_POST['mobileAdherent']."'.</p>";
-				$codeHtml .= "<p>Cordialement</p>";
-				envoyerCourriel($de,$destinataire,$sujet,$codeHtml);
-*/				
 
 			}
 
@@ -1898,20 +1752,7 @@ EOT;
 				$sql = "UPDATE {$GLOBALS['prefixe']}adherent SET statut={$_POST['statut']}, licenceAdherent =  '".$_POST['licenceAdherent']."', nomAdherent = '".$_POST['nomAdherent']."', prenomAdherent = '".$_POST['prenomAdherent']."', courrielAdherent = '".$_POST['courrielAdherent']."', mobileAdherent = '".$_POST['mobileAdherent']."' WHERE licenceAdherent = '".$_POST['ancienneLicenceAdherent']."'";
 
 				$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysqli_error ($GLOBALS['lkId']));
-/*				
-				// info admin si courriel modifiée
-				if ($courrielModifie) {
-					$destinataire = "mac.lc@free.fr";
-					$de = "mac.lc@free.fr";
-					$sujet = "adresse courriel adhérent modifiée";
-					$codeHtml = "<html><p>Bonjour</p>";
-					$codeHtml .= "<p>Voici les coordonnées de l'adhérent qui a modifié son adresse de courriel (ancienne courriel : $ancienCourriel):</p>";
-					$codeHtml .= "<p>".$_POST['licenceAdherent'].", ".$_POST['nomAdherent'].", ".$_POST['prenomAdherent'].", ".$_POST['courrielAdherent'].", ".$_POST['mobileAdherent'].".</p>";
-					$codeHtml .= "<p>Cordialement</p>";
-					envoyerCourriel($de,$destinataire,$sujet,$codeHtml);
-					
-				}
-*/
+
 				return "L'adhérent·e a été modifié·e";
 			}
 		}
@@ -1974,30 +1815,21 @@ EOT;
 			if ($ligne['Comment']!="") $csv .=  '"' .str_replace('"','""', $ligne['Comment']).'";';
 			else 	$csv .= '"'.$ligne['Field'].'";';
 		}
-/*
-		$sql = "SHOW FULL COLUMNS FROM animateur";
-		$res = mysqli_query($GLOBALS['lkId'],$sql);
-		while ($ligne=mysqli_fetch_assoc ($res)) {
-			if ($ligne['Comment']!="") $csv .=  '"' .str_replace('"','""', $ligne['Comment']).'";';
-			else 	$csv .= '"'.$ligne['Field'].'";';
-		}
-*/
 		$csv .= chr(10) ;
 		// WHERE selon statut
 		$where = "";
 
 		// les lignes
 		$sql = "SELECT * FROM {$GLOBALS['prefixe']}inscription, {$GLOBALS['prefixe']}adherent,  {$GLOBALS['prefixe']}seance WHERE adherentLicence=licenceAdherent AND seanceId=idSeance  ".$where." ORDER BY dateSeance, dateHeureInscription";
-//die($sql);
 		$res = mysqli_query($GLOBALS['lkId'],$sql);
 		while ($ligne=mysqli_fetch_assoc ($res)) {
-//var_dump($ligne);die;
+
 			foreach ($ligne AS $valeur) {
 
 				if ($valeur[0]>'0' && $valeur[0]<='9' ) $csv .= $valeur.";";
 				else $csv .= '"' .str_replace('"','""',$valeur).'";';
 
-//				$csv .= 'yeah'.';';
+
 			}
 			$csv .= chr(10) ;
 		}
@@ -2019,9 +1851,6 @@ EOT;
 	} // fin fonction telecharger
 
 	function afficherSupprimerDonneesDB($message) {
-		
-		
-		
 		
 		$GLOBALS['titrePage'] = "Suppression des données obsolètes de la base de données";
 		$GLOBALS['titrePageCourt'] = "Suppression des données";

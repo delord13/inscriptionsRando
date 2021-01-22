@@ -181,7 +181,7 @@
 		
 		// rechercher idActeur
 		$sql = "SELECT nomAdherent, prenomAdherent, statut, courrielAdherent, actif FROM {$GLOBALS['prefixe']}adherent WHERE licenceAdherent='$idActeur'";
-		$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
+		$res = mysqli_query ($GLOBALS['lkId'], $sql);
 		$acteur = mysqli_fetch_assoc ($res);
 		
 		// si déjà inscrit : mettre à jour statut
@@ -195,7 +195,7 @@
 			if (($acteur['statut']+$_SESSION['statut'])==12) $_SESSION['statut'] = 12; // administrateur et animateur
 			if ($acteur['statut']<$_SESSION['statut'])
 			$sql = "UPDATE {$GLOBALS['prefixe']}adherent SET statut={$_SESSION['statut']} WHERE licenceAdherent='$idActeur'";
-			$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
+			$res = mysqli_query ($GLOBALS['lkId'], $sql);
 			
 			if ($_SESSION['statut']>1) {
 				header('Location: gestion.php');
@@ -217,7 +217,7 @@
 	// appelée par inscription.php et gestion.php
 		if ($mode=='update') {
 			$sql = "SELECT licenceAdherent, statut, actif, nomAdherent, prenomAdherent, courrielAdherent, mobileAdherent, dateLimiteAttenteAdherent FROM {$GLOBALS['prefixe']}adherent WHERE licenceAdherent='{$_SESSION['idActeur']}' ";
-			$res = mysqli_query ($GLOBALS['lkId'], $sql) or die (mysql_error ());
+			$res = mysqli_query ($GLOBALS['lkId'], $sql);
 			$acteur = mysqli_fetch_assoc ($res);
 			if ($acteur['dateLimiteAttenteAdherent']=='NULL') $dateLimiteAttenteAdherent = NULL;
 			else $dateLimiteAttenteAdherent = $acteur['dateLimiteAttenteAdherent'];
